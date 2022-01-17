@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: GameSettings
   m_EditorClassIdentifier: 
   TowerRange: 6
+  MinionSpawnCooldown: 10

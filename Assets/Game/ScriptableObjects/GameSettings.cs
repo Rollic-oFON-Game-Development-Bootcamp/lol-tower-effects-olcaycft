@@ -6,5 +6,5 @@ using UnityEngine;
 public class GameSettings : ScriptableObject
 {
     public float TowerRange = 10f;
-    public float MinionSpawnCooldown = 2f;
+    public float MinionSpawnCooldown = 10f;
 }
