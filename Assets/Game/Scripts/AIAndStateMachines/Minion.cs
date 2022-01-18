@@ -35,6 +35,7 @@ public class Minion : MonoBehaviour
     {
         IsDead = false;
         currentHealth -= damage;
+        
         if (currentHealth <= 0)
         {
             IsDead = true;

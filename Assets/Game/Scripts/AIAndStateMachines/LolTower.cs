@@ -1,3 +1,4 @@
+using System;
 using NaughtyAttributes;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ public enum TowerStates
 public class LolTower : MonoBehaviour
 {
     [SerializeField] private Transform towerTop;
+    [SerializeField] private GameObject missilePre;
 
     [ReadOnly] public TowerStates currentState;
 
@@ -23,6 +25,8 @@ public class LolTower : MonoBehaviour
     private float towerRange => SettingsManager.GameSettings.TowerRange;
 
     private static Collider[] overlapResults = new Collider[100];
+
+    public static event Action<Vector3> HitMinion;
 
     private void OnDrawGizmos()
     {
@@ -122,9 +126,13 @@ public class LolTower : MonoBehaviour
         while (currentState == TowerStates.AttackMinion)
         {
             timer += Time.deltaTime;
+            
 
             if (timer >= attackCooldown)
             {
+                    Instantiate(missilePre, towerTop.position, towerTop.rotation);
+                    
+                
                 if (currentTargetMinion.GetHit())
                 {
                     currentTargetMinion = null;
@@ -132,8 +140,9 @@ public class LolTower : MonoBehaviour
                     continue;
                 }
                 timer -= attackCooldown;
+                Debug.Log(currentTargetMinion.transform.position);
             }
-
+            HitMinion?.Invoke(currentTargetMinion.transform.position);
             var sqrDistanceToTarget = (currentTargetMinion.transform.position - transform.position).sqrMagnitude;
             if (sqrDistanceToTarget > towerRange * towerRange)
             {
