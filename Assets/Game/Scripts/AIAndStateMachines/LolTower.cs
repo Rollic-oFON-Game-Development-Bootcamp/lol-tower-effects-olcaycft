@@ -73,6 +73,7 @@ public class LolTower : MonoBehaviour
             default:
                 break;
         }
+
         return result;
     }
 
@@ -93,12 +94,13 @@ public class LolTower : MonoBehaviour
         while (currentState == TowerStates.SeekTarget)
         {
             //State Loop
-            var hitCount = Physics.OverlapSphereNonAlloc(transform.position, towerRange, overlapResults, LayerMask.GetMask("Player"));
+            var hitCount = Physics.OverlapSphereNonAlloc(transform.position, towerRange, overlapResults,
+                LayerMask.GetMask("Player"));
             var results = overlapResults.Take(hitCount);
 
             var minions = results.Where(o => o.CompareTag("Minion"))
                 .Select(o => o.attachedRigidbody.GetComponent<Minion>());
-            
+
             if (minions.Any(o => !o.IsDead))
             {
                 var minion = minions.First(o => !o.IsDead);
@@ -108,14 +110,14 @@ public class LolTower : MonoBehaviour
             }
             else if (results.Any(o => o.CompareTag("TeamPlayer")))
             {
-                currentTargetPlayer = results.First(o => o.CompareTag("TeamPlayer")).attachedRigidbody.GetComponent<TeamPlayer>();
+                currentTargetPlayer = results.First(o => o.CompareTag("TeamPlayer")).attachedRigidbody
+                    .GetComponent<TeamPlayer>();
                 currentState = TowerStates.AttackEnemy;
             }
 
             yield return null;
         }
         //State Exit
-
     }
 
     private IEnumerator AttackMinion()
@@ -126,22 +128,21 @@ public class LolTower : MonoBehaviour
         while (currentState == TowerStates.AttackMinion)
         {
             timer += Time.deltaTime;
-            
+
 
             if (timer >= attackCooldown)
             {
-                    Instantiate(missilePre, towerTop.position, towerTop.rotation);
-                    
-                
+                Instantiate(missilePre, towerTop.position, towerTop.rotation);
                 if (currentTargetMinion.GetHit())
                 {
                     currentTargetMinion = null;
                     currentState = TowerStates.SeekTarget;
                     continue;
                 }
+
                 timer -= attackCooldown;
-                Debug.Log(currentTargetMinion.transform.position);
             }
+
             HitMinion?.Invoke(currentTargetMinion.transform.position);
             var sqrDistanceToTarget = (currentTargetMinion.transform.position - transform.position).sqrMagnitude;
             if (sqrDistanceToTarget > towerRange * towerRange)
@@ -155,7 +156,6 @@ public class LolTower : MonoBehaviour
             yield return null;
         }
         //State Exit
-
     }
 
     private IEnumerator AttackEnemy()
@@ -170,15 +170,17 @@ public class LolTower : MonoBehaviour
 
             if (timer >= attackCooldown)
             {
+                Instantiate(missilePre, towerTop.position, towerTop.rotation);
                 if (currentTargetPlayer.GetHit())
                 {
                     currentTargetPlayer = null;
                     currentState = TowerStates.SeekTarget;
                     continue;
                 }
+
                 timer -= attackCooldown;
             }
-
+            HitMinion?.Invoke(currentTargetPlayer.transform.position);
             var sqrDistanceToTarget = (currentTargetPlayer.transform.position - transform.position).sqrMagnitude;
             if (sqrDistanceToTarget > towerRange * towerRange)
             {
@@ -190,7 +192,6 @@ public class LolTower : MonoBehaviour
             yield return null;
         }
         //State Exit
-
     }
 
     public void Complain(TeamPlayer teamPlayer)

@@ -5763,6 +5763,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05b17ae323949b7408c177f5355cd5e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxHealth: 15
+  IsDead: 0
 --- !u!4 &1232097724
 Transform:
   m_ObjectHideFlags: 0

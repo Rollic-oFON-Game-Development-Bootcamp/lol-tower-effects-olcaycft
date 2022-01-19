@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,15 @@ using UnityEngine;
 [SelectionBase]
 public class TeamPlayer : MonoBehaviour
 {
+    [SerializeField] private int maxHealth;
+    
+    private int currentHealth;
+    public bool IsDead;
+
+    private void Start()
+    {
+        currentHealth = maxHealth;
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -17,6 +27,20 @@ public class TeamPlayer : MonoBehaviour
 
     public bool GetHit(int damage = 1)
     {
-        return false;
+        IsDead = false;
+        currentHealth -= damage;
+        
+        if (currentHealth <= 0)
+        {
+            IsDead = true;
+            Die();
+        }
+
+        return IsDead;
+    }
+    
+    private void Die()
+    {
+        Destroy(gameObject);
     }
 }
